@@ -1,32 +1,18 @@
 class ToastNotification extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
+        this.attachShadow({mode: 'open'});
+        this.loadTemplate();
     }
 
-    connectedCallback() {
-        this.render();
-        this.autoRemove();
+    async loadTemplate() {
+        const response = await fetch('toast.html');
+        this.template = await response.text();
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
-            <style>
-                :host {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    background-color: #333;
-                    color: #fff;
-                    padding: 10px 20px;
-                    border-radius: 5px;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-                    max-width: 300px;
-                    transition: opacity 0.5s, bottom 0.5s;
-                }
-            </style>
-            <slot></slot>
-        `;
+        this.shadowRoot.innerHTML = this.template;
+        this.remove();
     }
 
     autoRemove() {
