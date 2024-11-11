@@ -6,13 +6,18 @@ class ToastNotification extends HTMLElement {
     }
 
     async loadTemplate() {
-        const response = await fetch('toast.html');
+        const templateUrl = new URL('toast.html', import.meta.url);
+        const response = await fetch(templateUrl);
+        if (!response.ok) {
+            throw new Error('Failed to load template');
+        }
         this.template = await response.text();
+        this.render();
     }
 
     render() {
         this.shadowRoot.innerHTML = this.template;
-        this.remove();
+        this.autoRemove();
     }
 
     autoRemove() {
@@ -21,4 +26,5 @@ class ToastNotification extends HTMLElement {
         }, 3000);
     }
 }
+
 export default ToastNotification;
